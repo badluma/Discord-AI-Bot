@@ -84,3 +84,13 @@ def access_api(url, parameter, error_message, headers=None):
         response = str(f"{error_message} (HTTP {raw.status_code})")
     
     return response
+
+def remove_chars(input_string, chars_to_remove):
+    removal_table = str.maketrans('', '', chars_to_remove)
+    result_string = input_string.translate(removal_table)
+    return result_string
+
+def list_to_string(input_string):
+    removal_table = str.maketrans('', '', '[]{}')
+    result_string = input_string.translate(removal_table)
+    return result_string

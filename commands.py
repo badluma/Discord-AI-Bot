@@ -17,6 +17,7 @@ import requests
 config_path = 'config.json'
 config = function.load_config(config_path)
 
+
 def show_commands():
     response = "**All commands**\n\n!roll to roll a dice\n!flip or !coinflip to flip a coin\n!random <lowest><highest> to generate a random number\n\n!quote to get a random quote\n!fact to get a random useless funfact\n!joke to get an unfunny dadjoke\n!chuck to get a chuck norris joke\n!bible to get a random bible verse\n\n!bitcoin <eur or usd> to get the current bitcoin value\n!calc or !calculate <calculation> to calculate simple stuff with +-/ (e.g. 5-1+1/24)\n!qr <link> to generate a qr code\n\n!meme to get a random meme\n!emote to get a random emote\n!duck to get a random duck pic\n!cat to get a random cat pic\n!dog to get a random dog pic\n\n**Moderation** (admin only)\n!ban to ban members from using the bot\n!unban to unban members to let them use the bot"
     
@@ -142,5 +143,19 @@ def coinflip():
 def emote(emotes):
     response = random.choice(emotes)
     return response
-
-print(show_commands())
+def draw(*participants):
+    response = f"{random.choice(participants)} was chosen"
+# def disney(character_parameter):
+#     character = character_parameter.lower()
+#     character_info = requests.get("https://api.disneyapi.dev")
+#     if character_info.status_code == 200:
+#         data = character_info.json()
+#         if character in data["bitcoin"]:
+#             fi
+            
+#             response = f"bitcoin is at {data['bitcoin'][currency]} {currency} rn"
+#         else:
+#             response = "sry couldnt find that character"
+#     else:
+#         response = "sry couldnt fetch the price try again later maybe"
+#     return response

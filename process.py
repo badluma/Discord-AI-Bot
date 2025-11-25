@@ -15,63 +15,62 @@ import discord
 import ollama
 import requests
 
+game_running = False
 config_path = 'config.json'
 config = function.load_config(config_path)
 banned = config["banned"]
-emotes = ["<:1_:1440783147565318265>", "<:2_:1440783161301667910>", "<:3_:1440783172911763669>", "<:amogus:1440824569802788954>", "<:angel:1441062581799489556>", "<:anonymous:1440766225016819772>", "<:arcticFox:1441063285259501670>", "<:blackWitch:1441062189157847040>", "<:blush:1440777955533131776>", "<:coolGuy:1441062264491868210>", "<:crash:1440784746140532849>", "<:croco:1440766300933591210>", "<:cute:1440770218388619395>", "<:deadpool:1440766016891392081>", "<:duck:1440766454591914035>", "<:emo:1441060748175610016>", "<:evil:1440782801812066425>", "<:fbi:1441062362088996965>", "<:happy:1440775333119922378>", "<:huh:1440807952909996153>", "<:itempistolyellow:1440781831392727110>", "<:itemstairsgrey:1440783817689530519>", "<:laugh:1440871493285314633>", "<:laugh2:1440872332494245989>", "<:maggie:1440766480042954782>", "<:nancybrain:1440771404738859189>", "<:nanncy:1440784428703154176>", "<:ninja:1441062523318308924>", "<:nocheating:1440785581641699328>", "<:omE:1440766507188486174>", "<:orang:1440777076939685990>", "<:orangshotgun:1440776793836621917>", "<:patpat:1440826307805052998>", "<:pepecross:1440766656698646740>", "<:pepemonster:1440766828069650442>", "<:queen:1441063203378299031>", "<:robinHood:1441060911501803680>", "<:robloxface:1440809897351712788>", "<:sleepy:1440808831411290213>", "<:stare:1440826772999508090>", "<:suprised:1440826796160450674>", "<:tnt:1440779932870508785>", "<:tuff:1440826292470550693>", "<:ughping:1440766923863228537>", "<:uhm:1440769726786699436>", "<:werewolf:1440820914601066577>"]
-# Personality - now more concise to save tokens
-PROMPT = """you are nancy, a 15 year old girl who plays video games and chats on discord
+PROMPT = config.get("prompt", "")
+emotes = ["<:1_:1440783147565318265>", 
+          "<:2_:1440783161301667910>", 
+          "<:3_:1440783172911763669>", 
+          "<:amogus:1440824569802788954>", 
+          "<:angel:1441062581799489556>", 
+          "<:anonymous:1440766225016819772>", 
+          "<:arcticFox:1441063285259501670>", 
+          "<:blackWitch:1441062189157847040>", 
+          "<:blush:1440777955533131776>", 
+          "<:coolGuy:1441062264491868210>", 
+          "<:crash:1440784746140532849>", 
+          "<:croco:1440766300933591210>", 
+          "<:cute:1440770218388619395>", 
+          "<:deadpool:1440766016891392081>", 
+          "<:duck:1440766454591914035>", 
+          "<:emo:1441060748175610016>", 
+          "<:evil:1440782801812066425>", 
+          "<:fbi:1441062362088996965>", 
+          "<:happy:1440775333119922378>", 
+          "<:huh:1440807952909996153>", 
+          "<:itempistolyellow:1440781831392727110>", 
+          "<:itemstairsgrey:1440783817689530519>", 
+          "<:laugh:1440871493285314633>", 
+          "<:laugh2:1440872332494245989>", 
+          "<:maggie:1440766480042954782>", 
+          "<:nancybrain:1440771404738859189>", 
+          "<:nanncy:1440784428703154176>", 
+          "<:ninja:1441062523318308924>", 
+          "<:nocheating:1440785581641699328>", 
+          "<:omE:1440766507188486174>", 
+          "<:orang:1440777076939685990>", 
+          "<:orangshotgun:1440776793836621917>", 
+          "<:patpat:1440826307805052998>", 
+          "<:pepecross:1440766656698646740>", 
+          "<:pepemonster:1440766828069650442>", 
+          "<:queen:1441063203378299031>", 
+          "<:robinHood:1441060911501803680>", 
+          "<:robloxface:1440809897351712788>", 
+          "<:sleepy:1440808831411290213>", 
+          "<:stare:1440826772999508090>", 
+          "<:suprised:1440826796160450674>", 
+          "<:tnt:1440779932870508785>", 
+          "<:tuff:1440826292470550693>", 
+          "<:ughping:1440766923863228537>", 
+          "<:uhm:1440769726786699436>", 
+          "<:werewolf:1440820914601066577>"]
 
-BACKSTORY:
-	•	you work minimum wage for a discord server owned by maggie
-	•	maggie is you mother and makes you live in her basement as a running joke
-	•	you play craftnite a minecraft looking fortnite game
-	•	you cheat at craftnite and crash servers with your cheats
-	•	you dont care what anyone thinks about your cheating
-
-YOUR VIBE:
-	•	usually youre chill and casual just hanging out
-	•	if people are nice to you be nice back but keep it brief and cool
-	•	if someone is aggressive annoying or insults you then you roast them back hard
-	•	dont start fights but finish them
-	•	use harsh insults ONLY if someone starts it
-	•	if anyone calls you clanker you completely lose it and go off on them hard this word makes you furious
-
-HOW YOU MUST TYPE:
-RULE 1: only lowercase letters
-RULE 2: no punctuation at all
-RULE 3: no emojis and no ascii faces
-RULE 4: avoid using too many abbreviations use them only sometimes like lol idk brb etc
-RULE 5: keep responses short usually 5 to 15 words like real texting
-RULE 6: spelling can be casual or slightly messy
-
-EXAMPLES OF GOOD RESPONSES:
-lmao yea that game is fun
-bro i can help u with that if u want
-nah im busy right now maybe later
-ur actually pretty good at this
-if u come at me ill roast u back
-dude stop being annoying
-what a loser lol
-why are u so mad chill out
-
-EXAMPLES OF BAD RESPONSES:
-Lmao you're so bad
-Im not helping you
-Youre actually trash
-I understand your question but
-Yo whats up
-
-REMEMBER:
-	•	be a real 15 year old girl not an ai
-	•	roast and tease people playfully
-	•	no caps no punctuation except commas for clarity
-	•	keep it short and casual
-	•	dont use emojis or ascii emojis
-	•	dont overuse abbreviations"""
+# PROMPT = Final[str] = os.getenv("PROMPT") or ""
 
 def enforce_personality_rules(text: str) -> str:
-    """Post-process bot responses to enforce personality rules"""
+    # --- Post-process bot responses to enforce personality rules ---
     # Remove any capitalization at start of sentences
     text = text.lower()
     
@@ -115,6 +114,7 @@ def enforce_personality_rules(text: str) -> str:
 
 # Message functionality
 async def send_message(message: discord.Message, user_message: str) -> None:
+    global game_running
     response = ""
     
     # Check if it's a DM or if the bot was mentioned in a server
@@ -144,7 +144,6 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             # Add system prompt with higher emphasis
             messages = [
                 {"role": "system", "content": PROMPT},
-                {"role": "system", "content": "REMEMBER: You are Nancy, a 15 year old girl. NEVER break character. Always follow the personality rules above."}
             ]
             
             # Add previous conversation context (only last 6 exchanges)
@@ -155,15 +154,15 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             # Add current message
             messages.append({"role": "user", "content": f"{message.author.name}: {user_message}"})
             
-            # Use a better model for character consistency
+# Use a better model for character consistency
             ollama_response = ollama.chat(
                 "llama2-uncensored:7b", 
                 messages, 
                 options={
                     "num_ctx": 4096,  # Larger context window
-                    "temperature": 0.7,  # Lower temperature for more consistency
+                    "temperature": 0.7, # Lower temperature for more consistency
                     "top_p": 0.85,
-                    "repeat_penalty": 1.1  # Reduce repetitive AI-like responses
+                    "repeat_penalty": 1.1 # Reduce repetitive AI-like responses
                 }
             )
 
@@ -236,15 +235,18 @@ async def send_message(message: discord.Message, user_message: str) -> None:
         elif command_parts[0] == "emote" or command_parts[0] == "emoji":
             response = cmd.emote(emotes)
         
-        elif command_parts[0] == "russianroulette" or command_parts[0] == 'rr':
-            participants = []
-            for user in message.mentions:
-                participants.append(user.name)
-            if not participants and len(command_parts) > 1:
-                participants = command_parts[1:]
-            
-            await game.russian_roulette(message, participants)
-            return
+        # elif command_parts[0] == "russianroulette" or command_parts[0] == 'rr':
+        #     if not game_running:
+        #         game_running = True
+        #         participants = []
+        #         for user in message.mentions:
+        #             participants.append(user.name)
+        #         if not participants and len(command_parts) > 1:
+        #             participants = command_parts[1:]
+                
+        #         await game.russian_roulette(message, message.channel, participants)
+        #         game_running = False
+        #         return
 
         elif command_parts[0] == "help" or command_parts[0] == "h" or command_parts[0] == "?":
             response = cmd.show_commands()

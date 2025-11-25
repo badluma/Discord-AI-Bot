@@ -1,18 +1,16 @@
-# Nancy Discord Bot
+# Discord AI Bot
 
-A Discord bot that roleplays as Nancy, a 15-year-old gamer who works for a Discord server and chats in a casual teenage style.
+A customizable Discord bot powered by Ollama that can roleplay as any character or personality you define. Configure the bot's personality, behavior, and conversation style through a simple JSON configuration file.
 
 ## Features
 
-- Responds to mentions with character-appropriate messages
-- Maintains conversation history (last 6 interactions per channel)
-- Uses Ollama AI (llama2-uncensored:7b model) for natural responses
-- Types in lowercase with no punctuation, no emojis or ASCII emoticons
-- Stays in character as a casual teenage gamer
-- Extensive command system with utility and entertainment features
-- Moderation system with ban/unban functionality for admins
-- Russian roulette multiplayer game
-- Configurable settings stored in JSON file
+- **Fully Customizable AI Personality** - Define any character, tone, or behavior through the config file
+- **Conversation Memory** - Maintains conversation history (last 6 interactions per channel)
+- **Ollama Integration** - Uses local AI models (llama2-uncensored:7b by default) for natural responses
+- **Extensive Command System** - Utility and entertainment features built-in
+- **Moderation Tools** - Ban/unban functionality for admins
+- **Multi-Channel Support** - Works in both DMs and server channels (when mentioned)
+- **Easy Configuration** - All settings stored in a single JSON file
 
 ## Requirements
 
@@ -39,6 +37,8 @@ DISCORD_TOKEN=your_discord_bot_token_here
 ollama pull llama2-uncensored:7b
 ```
 
+4. Configure your bot's personality in `config.json` (see Configuration section below)
+
 ## Usage
 
 Run the bot:
@@ -46,7 +46,7 @@ Run the bot:
 python main.py
 ```
 
-Mention the bot in Discord to start a conversation. The bot will respond in character as Nancy.
+Mention the bot in Discord to start a conversation. The bot will respond according to your configured personality.
 
 ## Commands
 
@@ -54,7 +54,6 @@ Mention the bot in Discord to start a conversation. The bot will respond in char
 - `!roll` - Roll a dice (1-6)
 - `!flip` or `!coinflip` - Flip a coin
 - `!random <low> <high>` - Generate random number between two values
-- `!russianroulette` or `!rr` - Play multiplayer Russian roulette
 
 ### Content & Media
 - `!quote` - Get a random inspirational quote
@@ -78,23 +77,82 @@ Mention the bot in Discord to start a conversation. The bot will respond in char
 - `!ban <user>` - Ban user from using the bot
 - `!unban <user>` - Unban user to allow bot usage
 
-## Character
-
-Nancy is a 15-year-old who:
-- Works minimum wage for a Discord server
-- Lives in Maggie's basement (running gag)
-- Plays Craftnite and admits to cheating
-- Types casually with no caps or punctuation
-- No emojis or ASCII emoticons
-- Roasts people who are aggressive but is chill if treated nicely
-- Gets extremely angry if called "clanker"
-
 ## Configuration
 
-The bot uses a `config.json` file to store:
-- Banned users list
-- Bot admin list
-- Conversation history per channel
-- Other persistent settings
+The bot uses a `config.json` file to store all settings:
 
-Admin users can be configured in the config file to access moderation commands.
+### config.json Structure
+
+```json
+{
+    "banned": [],
+    "muted": [],
+    "bot_admin": ["your_discord_username"],
+    "admin": ["your_discord_username"],
+    "prompt": "Your custom AI personality prompt goes here",
+    "history": {}
+}
+```
+
+### Customizing Your Bot's Personality
+
+Edit the `prompt` field in `config.json` to define your bot's character. You can configure:
+
+- **Background and lore** - Who is the bot? What's their story?
+- **Personality traits** - How do they behave? What's their vibe?
+- **Communication style** - How do they type? What rules should they follow?
+- **Reactions** - How do they respond to different situations?
+- **Specific triggers** - Special responses to certain words or phrases
+
+**Example personalities you could create:**
+- A formal British butler
+- A pirate captain
+- A tech support expert
+- A motivational coach
+- A fantasy wizard
+- A sarcastic AI from the future
+- Or anything else you can imagine!
+
+### Admin Configuration
+
+- `bot_admin` - Users who can use moderation commands
+- `admin` - Additional admin tier (currently same permissions as bot_admin)
+- `banned` - List of users banned from interacting with the bot
+
+### Conversation History
+
+The bot automatically maintains conversation history per channel in the `history` object. This is limited to the last 6 interactions to maintain context while staying within model limits.
+
+## Customization Tips
+
+1. **Keep prompts clear and specific** - The more detailed your personality description, the better the bot will stay in character
+2. **Define communication rules** - Specify capitalization, punctuation, emoji usage, response length, etc.
+3. **Add examples** - Include examples of good and bad responses in your prompt
+4. **Test and iterate** - Try different prompts and see what works best for your use case
+
+## Model Configuration
+
+The bot uses the `llama2-uncensored:7b` model by default with these settings:
+- Context window: 4096 tokens
+- Temperature: 0.7 (balance between creativity and consistency)
+- Top-p: 0.85
+- Repeat penalty: 1.1
+
+These can be adjusted in `process.py` for different behavior.
+
+## File Structure
+
+- `main.py` - Bot initialization and event handlers
+- `process.py` - Message processing and AI response generation
+- `commands.py` - Command implementations
+- `functions.py` - Utility functions for config management and API calls
+- `games.py` - Game implementations (currently unused)
+- `config.json` - Bot configuration and personality settings
+
+## Contributing
+
+Feel free to add new commands, improve the AI integration, or enhance the personality enforcement system!
+
+## License
+
+This project is open source and available for modification and use. (CC0 1.0 Universal)
