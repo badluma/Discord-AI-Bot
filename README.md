@@ -7,7 +7,8 @@ A customizable Discord bot powered by Ollama that can roleplay as any character 
 - **Fully Customizable AI Personality** - Define any character, tone, or behavior through the config file
 - **Conversation Memory** - Maintains conversation history (last 6 interactions per channel)
 - **Ollama Integration** - Uses local AI models (llama2-uncensored:7b by default) for natural responses
-- **Extensive Command System** - Utility and entertainment features built-in
+- **Extensive Command System** - 40+ utility and entertainment commands
+- **Translation Support** - Translate text between 30+ languages
 - **Moderation Tools** - Ban/unban functionality for admins
 - **Multi-Channel Support** - Works in both DMs and server channels (when mentioned)
 - **Easy Configuration** - All settings stored in a single JSON file
@@ -46,31 +47,50 @@ Run the bot:
 python main.py
 ```
 
-Mention the bot in Discord to start a conversation. The bot will respond according to your configured personality.
+**How to interact:**
+- **Direct Chat**: Mention the bot (@Nancy) in any channel to start a conversation
+- **DM**: Send direct messages to the bot for private conversations
+- **Commands**: Use `!command` format for utility functions and entertainment
+- **Help**: Use `!help`, `!h`, or `?` to see all available commands
+
+The bot will respond according to your configured personality while maintaining conversation context.
 
 ## Commands
 
 ### Fun & Games
 - `!roll` - Roll a dice (1-6)
-- `!flip` or `!coinflip` - Flip a coin
+- `!flip` or `!coinflip` - Flip a coin (heads/tails)
 - `!random <low> <high>` - Generate random number between two values
+- `!randomnumber` or `!randint <low> <high>` - Generate random number (alias)
+
+- `!truth` - Get a truth question
+- `!dare` - Get a dare
+- `!wyr` - Get a "Would You Rather" question
+- `!rizz [target]` - Get a pickup line (optionally mention someone)
+- `!roast [target]` - Get a random insult (optionally mention someone)
+- `!compliment [target]` - Get a random compliment (optionally mention someone)
+- `!activity` - Get a random activity suggestion
+- `!draw <participants...>` - Randomly choose from participants
 
 ### Content & Media
 - `!quote` - Get a random inspirational quote
-- `!fact` - Get a random useless fun fact
-- `!joke` - Get an unfunny dad joke
-- `!chuck` - Get a Chuck Norris joke
-- `!bible` - Get a random Bible verse
+- `!fact` or `!funfact` - Get a random useless fun fact
+- `!joke` or `!dadjoke` - Get an unfunny dad joke
+- `!chuck` or `!chucknorris` - Get a Chuck Norris joke
+- `!bible` or `!verse` - Get a random Bible verse
 - `!meme` - Get a random meme
-- `!emote` - Get a random custom emote
+- `!emote` or `!emoji` - Get a random custom emote
 - `!duck` - Get a random duck picture
 - `!cat` - Get a random cat picture
 - `!dog` - Get a random dog picture
 
 ### Utilities
-- `!bitcoin <eur|usd>` - Get current Bitcoin price
+- `!bitcoin` or `!btc <eur|usd>` - Get current Bitcoin price
 - `!calc` or `!calculate <expression>` - Simple calculator (+, -, *, /)
 - `!qr <link>` - Generate QR code for a link
+- `!translate` or `!trans` - Translation utility
+  - `!translate` - Show all supported languages
+  - `!translate <source> <target> <text>` - Translate text between languages
 - `!help` - Show all available commands
 
 ### Moderation (Admin Only)

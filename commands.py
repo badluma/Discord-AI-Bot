@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 
 import functions as function
-import process as process
+import music
 
 import os
 import re
@@ -19,7 +19,7 @@ config = function.load_config(config_path)
 
 
 def show_commands():
-    response = "**All commands**\n\n!roll to roll a dice\n!flip or !coinflip to flip a coin\n!random <lowest><highest> to generate a random number\n\n!quote to get a random quote\n!fact to get a random useless funfact\n!joke to get an unfunny dadjoke\n!chuck to get a chuck norris joke\n!bible to get a random bible verse\n\n!bitcoin <eur or usd> to get the current bitcoin value\n!calc or !calculate <calculation> to calculate simple stuff with +-/ (e.g. 5-1+1/24)\n!qr <link> to generate a qr code\n\n!meme to get a random meme\n!emote to get a random emote\n!duck to get a random duck pic\n!cat to get a random cat pic\n!dog to get a random dog pic\n\n**Moderation** (admin only)\n!ban to ban members from using the bot\n!unban to unban members to let them use the bot"
+    response = "**Fun & Games**\n!roll - Roll a dice (1-6)\n!flip or !coinflip - Flip a coin (heads/tails)\n!random <low> <high> - Generate random number between two values\n!randomnumber or !randint <low> <high> - Generate random number (alias)\n!tord <t|d|r> - Truth or Dare (t=truth, d=dare, r=random)\n!truth - Get a truth question\n!dare - Get a dare\n!wyr - Get a \"Would You Rather\" question\n!rizz [target] - Get a pickup line (optionally mention someone)\n!roast - Get a random insult\n!compliment - Get a random compliment\n!activity - Get a random activity suggestion\n!draw <participants...> - Randomly choose from participants\n\n**Content & Media**\n!quote - Get a random inspirational quote\n!fact or !funfact - Get a random useless fun fact\n!joke or !dadjoke - Get an unfunny dad joke\n!chuck or !chucknorris - Get a Chuck Norris joke\n!bible or !verse - Get a random Bible verse\n!meme - Get a random meme\n!emote or !emoji - Get a random custom emote\n!duck - Get a random duck picture\n!cat - Get a random cat picture\n!dog - Get a random dog picture\n\n**Music**\n!play <song> - Play a song or add it to the queue\n!pause - Pause the current song\n!resume - Resume the paused song\n!skip - Skip to the next song\n!skipback - Go back to the previous song\n!stop - Stop music and disconnect from voice channel\n!now - Show currently playing song\n!queue - Show the music queue\n\n**Utilities**\n!bitcoin or !btc <eur|usd> - Get current Bitcoin price\n!calc or !calculate <expression> - Simple calculator (+, -, *, /)\n!qr <link> - Generate QR code for a link\n!translate <source_lang> <target_lang> <text> - Translate text between languages\n\n**Moderation** (admin only)\n!ban <user> - Ban user from using the bot\n!unban <user> - Unban user to allow bot usage"
     
     return response
 
@@ -143,8 +143,54 @@ def coinflip():
 def emote(emotes):
     response = random.choice(emotes)
     return response
-def draw(*participants):
-    response = f"{random.choice(participants)} was chosen"
+def draw(participants):
+    if not participants:
+        return "you need to provide at least one participant to draw from"
+    participant_list = participants.split()
+    if len(participant_list) == 1:
+        return f"only one participant provided: {participant_list[0]}"
+    chosen = random.choice(participant_list)
+    response = f"{chosen} was chosen"
+    return response
+def rizz():
+    response = function.access_api("https://rizzapi.vercel.app/random", "text", "rizz api not available rn srry")
+    return response.lower()
+def roast():
+    response = function.access_api("https://evilinsult.com/generate_insult.php?lang=en&type=json", "insult", "sry u gotta roast that guy urself, api down rn")
+    return response
+def translate(source_lang, target_lang, text):
+    # Validate source and target languages
+    from process import language_list
+    if source_lang not in language_list:
+        return f"invalid source language code. use !help to see supported languages"
+    if target_lang not in language_list:
+        return f"invalid target language code. use !help to see supported languages"
+    
+    url = f"https://api.mymemory.translated.net/get?q={text}&langpair={source_lang}|{target_lang}"
+    raw = requests.get(url)
+    if raw.status_code == 200:
+        try:
+            data = raw.json()
+            if 'responseData' in data and 'translatedText' in data['responseData']:
+                response = data['responseData']['translatedText']
+                return response
+            else:
+                return "sry couldnt translate that rn try again later"
+        except (requests.exceptions.JSONDecodeError, KeyError):
+            return "sry couldnt translate that rn try again later"
+    else:
+        return f"Sry the translate api is unavailable rn (error {str(raw.status_code)})"
+def compliment():
+    try:
+        response = function.access_api("https://my-fun-api.onrender.com/compliment", "data", "sry seems like thats not available rn")
+        if isinstance(response, dict) and "compliment" in response:
+            response = response["compliment"]
+        return response
+    except Exception as e:
+        return "sry the compliment service is not available rn"
+def activity():
+    response = function.access_api("https://bored-api.appbrewery.com/random", "activity", "sry u gotta find smth to do without the api :P")
+    return response
 # def disney(character_parameter):
 #     character = character_parameter.lower()
 #     character_info = requests.get("https://api.disneyapi.dev")
@@ -159,3 +205,67 @@ def draw(*participants):
 #     else:
 #         response = "sry couldnt fetch the price try again later maybe"
 #     return response
+
+# Music
+
+async def play_music(message):
+    """Start playing music"""
+    if music.music_player is None:
+        return "music player not initialized"
+    response = await music.music_player.start(message)
+    return response
+
+def skip_song():
+    """Skip current song"""
+    if music.music_player is None:
+        return "music player not initialized"
+    return music.music_player.skip()
+
+def skip_back_song():
+    """Go back to previous song"""
+    if music.music_player is None:
+        return "music player not initialized"
+    return music.music_player.skip_back()
+
+def pause_music():
+    """Pause music"""
+    if music.music_player is None:
+        return "music player not initialized"
+    return music.music_player.pause()
+
+def resume_music():
+    """Resume music"""
+    if music.music_player is None:
+        return "music player not initialized"
+    return music.music_player.resume()
+
+async def stop_music():
+    """Stop music and disconnect"""
+    if music.music_player is None:
+        return "music player not initialized"
+    response = await music.music_player.stop()
+    return response
+
+def now_playing():
+    """Show current song"""
+    if music.music_player is None:
+        return "music player not initialized"
+    return music.music_player.now_playing()
+
+def music_queue():
+    """Show upcoming songs"""
+    if music.music_player is None:
+        return "music player not initialized"
+    return music.music_player.queue_info()
+
+def list_voice_channels(message):
+    """List all voice channels in the server"""
+    if message.guild:
+        voice_channels = [channel for channel in message.guild.channels if channel.type == discord.ChannelType.voice]
+        if voice_channels:
+            channel_list = "\n".join([f"• {channel.name}" for channel in voice_channels])
+            return f"Voice channels in this server:\n{channel_list}"
+        else:
+            return "No voice channels found in this server"
+    else:
+        return "This command can only be used in a server"

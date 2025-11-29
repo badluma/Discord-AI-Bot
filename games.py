@@ -6,6 +6,22 @@ import functions as function
 from dotenv import load_dotenv
 from discord.ext import commands
 
+def tord(type_parameter):
+    if type_parameter == "t" or type_parameter == "truth":
+        response = function.access_api("https://api.truthordarebot.xyz/v1/truth", "question", "sorry, seems like the tord api is offline rn")
+    elif type_parameter == "d" or type_parameter == "dare":
+        response = function.access_api("https://api.truthordarebot.xyz/v1/dare", "question", "sorry, seems like the tord api is offline rn")
+    elif type_parameter == "r" or type_parameter == "random":
+        response = random.choice([function.access_api("https://api.truthordarebot.xyz/v1/truth", "question", "sorry, seems like the tord api is offline rn"), function.access_api("https://api.truthordarebot.xyz/v1/dare", "question", "sorry, seems like the tord api is offline rn")])
+    else:
+        response = "seems like u chose smth that doesnt exist. use either t for truth, d for dare or r for random"
+    
+    return response
+
+def wyr():
+    response = function.access_api("https://api.truthordarebot.xyz/api/wyr", "question", "sorry, seems like the wyr api is offline rn")
+    return response 
+
 # async def russian_roulette(message_parameter, channel_parameter, participants):
 #     if not participants or len(participants) < 2:
 #         return "need at least 2 people to play"

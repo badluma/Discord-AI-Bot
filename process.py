@@ -67,6 +67,44 @@ emotes = ["<:1_:1440783147565318265>",
           "<:uhm:1440769726786699436>", 
           "<:werewolf:1440820914601066577>"]
 
+languages = ("Arabic: `ar`\n"
+    "Azerbaijani: `az`\n"
+    "Chinese: `zh`\n"
+    "Czech: `cs`\n"
+    "Danish: `da`\n"
+    "Dutch: `nl`\n"
+    "English: `en`\n"
+    "Esperanto: `eo`\n"
+    "Finnish: `fi`\n"
+    "French: `fr`\n"
+    "German: `de`\n"
+    "Greek: `el`\n"
+    "Hebrew: `he`\n"
+    "Hindi: `hi`\n"
+    "Hungarian: `hu`\n"
+    "Indonesian: `id`\n"
+    "Irish: `ga`\n"
+    "Italian: `it`\n"
+    "Japanese: `ja`\n"
+    "Kabyle: `kab`\n"
+    "Korean: `ko`\n"
+    "Occitan: `oc`\n"
+    "Persian: `fa`\n"
+    "Polish: `pl`\n"
+    "Portuguese: `pt`\n"
+    "Russian: `ru`\n"
+    "Slovak: `sk`\n"
+    "Spanish: `es`\n"
+    "Swedish: `sv`\n"
+    "Turkish: `tr`\n"
+    "Ukrainian: `uk`\n"
+    "Vietnamese: `vi`\n")
+
+language_list = ["ar", "zh", "cs", "da", "nl", "en", "eo", "fi", 
+                 "fr", "de", "el", "he", "hi", "hu", "id", "ga", 
+                 "it", "ja", "kab", "ko", "oc", "fa", "pl", "pt", 
+                 "ru", "sk", "es", "sv", "tr", "uk", "vi"]
+
 # PROMPT = Final[str] = os.getenv("PROMPT") or ""
 
 def enforce_personality_rules(text: str) -> str:
@@ -154,7 +192,7 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             # Add current message
             messages.append({"role": "user", "content": f"{message.author.name}: {user_message}"})
             
-# Use a better model for character consistency
+            # Use a better model for character consistency
             ollama_response = ollama.chat(
                 "llama2-uncensored:7b", 
                 messages, 
@@ -194,62 +232,129 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             print(e)
             
     elif message.author.name not in banned and user_message.startswith("!"):
-        command_parts = user_message[1:].lower().strip().split()
+        cmd_parts = user_message[1:].lower().strip().split()
 
-        if command_parts[0] == "roll":
+        if cmd_parts[0] == "roll":
             response = cmd.roll()
-        elif command_parts[0] == "ban":
-            response = cmd.ban(command_parts[1] if len(command_parts) > 1 else "", message)
-        elif command_parts[0] == "unban":
-            response = cmd.unban(command_parts[1] if len(command_parts) > 1 else "", message)
-        elif command_parts[0] == "quote":
+        elif cmd_parts[0] == "ban":
+            response = cmd.ban(cmd_parts[1] if len(cmd_parts) > 1 else "", message)
+        elif cmd_parts[0] == "unban":
+            response = cmd.unban(cmd_parts[1] if len(cmd_parts) > 1 else "", message)
+        elif cmd_parts[0] == "quote":
             response = cmd.quote()
-        elif command_parts[0] == "joke" or command_parts[0] == "dadjoke":
+        elif cmd_parts[0] == "joke" or cmd_parts[0] == "dadjoke":
             response = cmd.joke()
-        elif command_parts[0] == "meme":
+        elif cmd_parts[0] == "meme":
             response = cmd.meme()
-        elif command_parts[0] == "duck":
+        elif cmd_parts[0] == "duck":
             response = cmd.duck()
-        elif command_parts[0] == "dog":
+        elif cmd_parts[0] == "dog":
             response = cmd.dog()
-        elif command_parts[0] == "cat":
+        elif cmd_parts[0] == "cat":
             response = cmd.cat()
-        elif command_parts[0] == "chuck" or command_parts[0] == "chucknorris":
+        elif cmd_parts[0] == "chuck" or cmd_parts[0] == "chucknorris":
             response = cmd.chuck()
-        elif command_parts[0] == "fact" or command_parts[0] == "funfact":
+        elif cmd_parts[0] == "fact" or cmd_parts[0] == "funfact":
             response = cmd.fact()
-        elif command_parts[0] == "bible" or command_parts[0] == 'verse':
+        elif cmd_parts[0] == "bible" or cmd_parts[0] == 'verse':
             response = cmd.bible()
-        elif command_parts[0] == "calc" or command_parts[0] == 'calculate':
-            response = cmd.calculate(command_parts[1] if len(command_parts) > 1 else "")
-        elif command_parts[0] == "btc" or command_parts[0] == "bitcoin":
-            response = cmd.bitcoin(command_parts[1] if len(command_parts) > 1 else "usd")
-        elif command_parts[0] == "qr":
-            response = cmd.qr(command_parts[1] if len(command_parts) > 1 else "")
-        elif command_parts[0] == "random" or command_parts[0] == 'rand':
-            low = int(command_parts[1]) if len(command_parts) > 1 and command_parts[1].isdigit() else 0
-            high = int(command_parts[2]) if len(command_parts) > 2 and command_parts[2].isdigit() else 100
+        elif cmd_parts[0] == "calc" or cmd_parts[0] == 'calculate':
+            response = cmd.calculate(cmd_parts[1] if len(cmd_parts) > 1 else "")
+        elif cmd_parts[0] == "btc" or cmd_parts[0] == "bitcoin":
+            response = cmd.bitcoin(cmd_parts[1] if len(cmd_parts) > 1 else "usd")
+        elif cmd_parts[0] == "qr":
+            response = cmd.qr(cmd_parts[1] if len(cmd_parts) > 1 else "")
+        elif cmd_parts[0] == "activity":
+            response = cmd.activity()
+        elif cmd_parts[0] == "roast" or cmd_parts[0] == "insult":
+            if len(cmd_parts) > 1:
+                response = f"{cmd_parts[1]} {cmd.roast()}"
+            else:
+                response = cmd.roast()
+        elif cmd_parts[0] == "compliment" or cmd_parts[0] == "nice":
+            if len(cmd_parts) > 1:
+                response = f"{cmd_parts[1]} {cmd.compliment()}".lower()
+            else:
+                response = cmd.compliment()
+        elif cmd_parts[0] == "rizz" or cmd_parts[0] == "pickup":
+            if len(cmd_parts) > 1:
+                response = f"{' '.join(cmd_parts[1:]).lower()}, {cmd.rizz()}"
+            else:
+                response = cmd.rizz()
+        elif cmd_parts[0] == "randomnumber" or cmd_parts[0] == "randint":
+            low = int(cmd_parts[1]) if len(cmd_parts) > 1 and cmd_parts[1].isdigit() else 0
+            high = int(cmd_parts[2]) if len(cmd_parts) > 2 and cmd_parts[2].isdigit() else 100
             response = str(cmd.random_digit(low, high))
-        elif command_parts[0] == "coinflip" or command_parts[0] == "flip":
+        elif cmd_parts[0] == "coinflip" or cmd_parts[0] == "flip":
             response = cmd.coinflip()
-        elif command_parts[0] == "emote" or command_parts[0] == "emoji":
+        elif cmd_parts[0] == "emote" or cmd_parts[0] == "emoji":
             response = cmd.emote(emotes)
-        
-        # elif command_parts[0] == "russianroulette" or command_parts[0] == 'rr':
+        elif cmd_parts[0] == "draw":
+            if len(cmd_parts) > 1:
+                participants = ' '.join(cmd_parts[1:])
+                response = cmd.draw(participants)
+            else:
+                response = "you need to provide participants to draw from"
+        elif cmd_parts[0] == "translate" or cmd_parts[0] == "trans":
+            if len(cmd_parts) == 1:
+                response = f"**Supported Languages:**\n{languages}\n**Usage:** !translate source_lang target_lang text"
+            elif len(cmd_parts) >= 3:
+                source_lang = cmd_parts[1]
+                target_lang = cmd_parts[2]
+                # Extract text after the command and language codes
+                text_start = len(cmd_parts[0]) + len(source_lang) + len(target_lang) + 3  # +3 for spaces and !
+                text = user_message[text_start:].strip()
+                if text:
+                    response = cmd.translate(source_lang, target_lang, text)
+                else:
+                    response = "u need to provide text to translate. format: !translate source_lang target_lang text"
+            else:
+                response = "wrong format. use: !translate source_lang target_lang text"
+        elif cmd_parts[0] == "truth":
+            response = game.tord("truth")
+        elif cmd_parts[0] == "dare":
+            response = game.tord("dare")
+        elif cmd_parts[0] == "wyr":
+            response = game.wyr()
+        # elif cmd_parts[0] == "russianroulette" or cmd_parts[0] == 'rr':
         #     if not game_running:
         #         game_running = True
         #         participants = []
         #         for user in message.mentions:
         #             participants.append(user.name)
-        #         if not participants and len(command_parts) > 1:
-        #             participants = command_parts[1:]
+        #         if not participants and len(cmd_parts) > 1:
+        #             participants = cmd_parts[1:]
                 
         #         await game.russian_roulette(message, message.channel, participants)
         #         game_running = False
         #         return
 
-        elif command_parts[0] == "help" or command_parts[0] == "h" or command_parts[0] == "?":
+        elif cmd_parts[0] == "help" or cmd_parts[0] == "h" or cmd_parts[0] == "?":
             response = cmd.show_commands()
+
+        # Music
+        elif cmd_parts[0] == "listvc":
+            response = cmd.list_voice_channels(message)
+
+        elif cmd_parts[0] == "play":
+            response = await cmd.play_music(message)
+        elif cmd_parts[0] == "pause":
+            response = cmd.pause_music()
+        elif cmd_parts[0] == "resume":
+            response = cmd.resume_music()
+        elif cmd_parts[0] == "skip":
+            response = cmd.skip_song()
+        elif cmd_parts[0] == "skipback":
+            response = cmd.skip_back_song()
+        elif cmd_parts[0] == "stop":
+            response = await cmd.stop_music()
+        elif cmd_parts[0] == "now":
+            response = cmd.now_playing()
+        elif cmd_parts[0] == "queue":
+            response = cmd.music_queue()
+
+        
+
 
     if response:
         await message.channel.send(str(response))
