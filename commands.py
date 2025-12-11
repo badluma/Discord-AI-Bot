@@ -78,13 +78,17 @@ def ban(user, message):
         if user not in config["banned"]:
             if user not in config["admin"]:
                 function.add_to_list("banned", user)
-                response = function.get_response(f"i banned {user} from interacting with the bot", f"Banned {user} from interacting with the bot.")
+                response = function.get_response(f"i banned {user} from interacting with the bot", 
+                                                 f"Banned {user} from interacting with the bot.")
             else:
-                response = function.get_response(f"bro u cant ban {user}, theyre an admin", f"{user} cannot be banned because they are an admin.")
+                response = function.get_response(f"bro u cant ban {user}, theyre an admin", 
+                                                 f"{user} cannot be banned because they are an admin.")
         else:
-            response = function.get_response(f"{user} is already banned lmao", f"{user} is already banned.")
+            response = function.get_response(f"{user} is already banned lmao", 
+                                             f"{user} is already banned.")
     else:
-        response = function.get_response("bro u cant ban anyone, nice try lol", "You cannot ban anybody because you aren't an admin.")
+        response = function.get_response("bro u cant ban anyone, nice try lol", 
+                                         "You cannot ban anybody because you aren't an admin.")
     return response
 def unban(user, message):
     if message.author.name in config["admin"]:
@@ -95,11 +99,14 @@ def unban(user, message):
                 function.save_config(current_config, config_path)
                 response = function.get_response(f"i unbanned {user}", f"{user} has been unbanned.")
             else:
-                response = function.get_response(f"bro u cant unban {user}, theyre an admin", f"{user} cannot be unbanned because they are an admin")
+                response = function.get_response(f"bro u cant unban {user}, theyre an admin", 
+                                                 f"{user} cannot be unbanned because they are an admin")
         else:
-            response = function.get_response("the guy u want to unban isnt even in the ban list lmao", f"{user} is not banned.")
+            response = function.get_response("the guy u want to unban isnt even in the ban list lmao", 
+                                             f"{user} is not banned.")
     else:
-        response = function.get_response("bro u cant unban anyone lmao", "You cannot unban anyone because you are not an admin.")
+        response = function.get_response("bro u cant unban anyone lmao", 
+                                         "You cannot unban anyone because you are not an admin.")
     return response
 def quote():
     quote_response = requests.get("https://zenquotes.io/api/random")
@@ -112,13 +119,17 @@ def quote():
         response = function.get_response("failed to get a quote sry :(", "Quote API unavailable.")
     return response
 def joke():
-    return function.access_api("https://icanhazdadjoke.com/", "joke", function.get_response("failed to get a joke sry :(", "Joke API unavailable."), {"Accept": "application/json"})
+    return function.access_api("https://icanhazdadjoke.com/", "joke", 
+                               function.get_response("failed to get a joke sry :(", "Joke API unavailable."), {"Accept": "application/json"})
 def meme():
-    return function.access_api('https://meme-api.com/gimme', 'url', function.get_response("failed to get a meme sry :(", "Meme API unavailable."))
+    return function.access_api('https://meme-api.com/gimme', 'url', 
+                               function.get_response("failed to get a meme sry :(", "Meme API unavailable."))
 def duck():
-    return function.access_api("https://random-d.uk/api/random", 'url', function.get_response("failed to get a duck image sry :(", "RandomDuck API unavailable."))
+    return function.access_api("https://random-d.uk/api/random", 'url', 
+                               function.get_response("failed to get a duck image sry :(", "RandomDuck API unavailable."))
 def dog():
-    return function.access_api("https://random.dog/woof.json", 'url', function.get_response("failed to get a dog image sorry", "RandomDog API unavailable."))
+    return function.access_api("https://random.dog/woof.json", 'url', 
+                               function.get_response("failed to get a dog image sorry", "RandomDog API unavailable."))
 def cat():
     raw = requests.get("https://api.thecatapi.com/v1/images/search")
     if raw.status_code == 200:
@@ -131,9 +142,11 @@ def cat():
         response = function.get_response("failed to get a cat image for u sry :(", "TheCatAPI unavailable.")
     return response
 def chuck():
-    return function.access_api("https://api.chucknorris.io/jokes/random", 'value', function.get_response("sorry seems like chuck norris is offline XD", "Chuck Norris API unavailable."))
+    return function.access_api("https://api.chucknorris.io/jokes/random", 'value', 
+                               function.get_response("sorry seems like chuck norris is offline XD", "Chuck Norris API unavailable."))
 def fact():
-    return function.access_api("https://uselessfacts.jsph.pl/api/v2/facts/random", "text", function.get_response("sry couldnt get random fact rn, try again later maybe", "UselessFacts API unavailable."))
+    return function.access_api("https://uselessfacts.jsph.pl/api/v2/facts/random", "text", 
+                               function.get_response("sry couldnt get random fact rn, try again later maybe", "UselessFacts API unavailable."))
 def bible():
     bible_response = requests.get("https://bible-api.com/data/web/random")
     if bible_response.status_code == 200:
@@ -143,11 +156,13 @@ def bible():
                 verse = data['random_verse']
                 response = f"{verse['text']}{verse['book']} {verse['chapter']}, {verse['verse']}"
             else:
-                response = function.get_response("failed to fetch bible verse bc of invalid response format", "Failed to fetch bible verse - invalid response format")
+                response = function.get_response("failed to fetch bible verse bc of invalid response format", 
+                                                 "Failed to fetch bible verse - invalid response format")
         except (requests.exceptions.JSONDecodeError, KeyError):
             response = function.get_response("sry couldnt get a bible verse", "Couldn't fetch bible verse.")
     else:
-        response = function.get_response(f"failed fetching bible verse, heres the status code: {bible_response.status_code}", f"Failed to fetch bible verse, status code: {bible_response.status_code}")
+        response = function.get_response(f"failed fetching bible verse, heres the status code: {bible_response.status_code}", 
+                                         f"Failed to fetch bible verse, status code: {bible_response.status_code}")
     return response
 def calculate(calculation):
     try:
@@ -200,10 +215,12 @@ def draw(participants):
     response = function.get_response(f"{chosen} was chosen", f"{chosen} was chosen.")
     return response
 def rizz():
-    response = function.access_api("https://rizzapi.vercel.app/random", "text", function.get_response("rizz api not available rn srry", "Rizz API unavailable."))
+    response = function.access_api("https://rizzapi.vercel.app/random", "text", 
+                                   function.get_response("rizz api not available rn srry", "Rizz API unavailable."))
     return response
 def roast():
-    response = function.access_api("https://evilinsult.com/generate_insult.php?lang=en&type=json", "insult",function.get_response("sry u gotta roast that guy urself, api down rn", "EvilInsult API unavailable."))
+    response = function.access_api("https://evilinsult.com/generate_insult.php?lang=en&type=json", "insult", 
+                                   function.get_response("sry u gotta roast that guy urself, api down rn", "EvilInsult API unavailable."))
     return response
 def translate(source_lang, target_lang, text):
     # Validate source and target languages
@@ -226,17 +243,20 @@ def translate(source_lang, target_lang, text):
         except (requests.exceptions.JSONDecodeError, KeyError):
             return function.get_response("sry couldnt translate that rn try again later", "Translation failed")
     else:
-        return function.get_response(f"Sry the translate api is unavailable rn (error {str(raw.status_code)})", f"Translate API unavailable (error {str(raw.status_code)})")
+        return function.get_response(f"Sry the translate api is unavailable rn (error {str(raw.status_code)})", 
+                                     f"Translate API unavailable (error {str(raw.status_code)})")
 def compliment():
     try:
-        response = function.access_api("https://my-fun-api.onrender.com/compliment", "data", function.get_response("sry seems like thats not available rn", "MyFunAPI unavailable."))
+        response = function.access_api("https://my-fun-api.onrender.com/compliment", "data", 
+                                       function.get_response("sry seems like thats not available rn", "MyFunAPI unavailable."))
         if isinstance(response, dict) and "compliment" in response:
             response = response["compliment"]
         return response
     except Exception as e:
         return function.get_response("sry the compliment service is not available rn", "MyFunAPI unavailable")
 def activity():
-    response = function.access_api("https://bored-api.appbrewery.com/random", "activity", function.get_response("sry u gotta find smth to do without the api :P", "Bored API unavailable."))
+    response = function.access_api("https://bored-api.appbrewery.com/random", "activity", 
+                                   function.get_response("sry u gotta find smth to do without the api :P", "Bored API unavailable."))
     return response
 
 # Music
@@ -301,5 +321,3 @@ def list_voice_channels(message):
             return "No voice channels found in this server"
     else:
         return "This command can only be used in a server"
-
-print(show_commands())
