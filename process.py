@@ -209,8 +209,8 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             )
 
             # Extract just the message content from the response
-            message_content_raw = ollama_response['message']['content']
-            
+            message_content = ollama_response['message']['content']
+
             # Double-check for character breaks and force correction if needed
             if any(phrase in message_content.lower() for phrase in ["i apologize", "as an ai", "language model", "i cannot", "i'm sorry"]):
                 # Force a Nancy-like response if character is broken
@@ -319,6 +319,7 @@ async def send_message(message: discord.Message, user_message: str) -> None:
 
         elif cmd_parts[0] == "help" or cmd_parts[0] == "h" or cmd_parts[0] == "?":
             await message.channel.send(str(cmd.show_commands()))
+            return
 
         # Music
         elif cmd_parts[0] == "listvc":
@@ -341,14 +342,17 @@ async def send_message(message: discord.Message, user_message: str) -> None:
         elif cmd_parts[0] == "queue":
             response = cmd.music_queue()
     
-a    function.save_config(config, config_path)
-
-    if config["is_casual"] == true:
-        response = enforce_personality_rules(response)
-    elif config["is_casual"] == false:
-        pass
-    else:
-        print(f"\nInvalid value for is_casual in config.json: '{config["is_casual"]}'. Please use either true or false\n")
+    function.save_config(config, config_path)
 
     if response:
+        # Check if response is a URL (starts with http:// or https://)
+        is_url = response.startswith('http://') or response.startswith('https://')
+        
+        if config["is_casual"] == True and not is_url:
+            response = enforce_personality_rules(response)
+        elif config["is_casual"] == False:
+            pass
+        else:
+            print(f"\nInvalid value for is_casual in config.json: '{config["is_casual"]}'. Please use either true or false\n")
+
         await message.channel.send(str(response))
