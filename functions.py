@@ -9,6 +9,7 @@ def load_config(config_path):
         config = json.load(file)
     
     return config
+load_config(config_path)
 
 def save_config(config_data, config_path):
     with open(config_path, 'w') as file:
@@ -94,3 +95,9 @@ def list_to_string(input_string):
     removal_table = str.maketrans('', '', '[]{}')
     result_string = input_string.translate(removal_table)
     return result_string
+
+def get_response(casual, formal):
+    if config["is_casual"] == true:
+        return casual
+    elif config["is_casual"] == false:
+        return formal

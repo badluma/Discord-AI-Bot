@@ -15,9 +15,13 @@ import discord
 import ollama
 import requests
 
+
+
 game_running = False
 config_path = 'config.json'
 config = function.load_config(config_path)
+slurs_path = 'slurs.json'
+slurs = function.load_config(slurs_path)
 banned = config["banned"]
 PROMPT = config.get("prompt", "")
 emotes = ["<:1_:1440783147565318265>", 
@@ -114,10 +118,9 @@ def enforce_personality_rules(text: str) -> str:
     
     # Remove AI-like phrases that break character
     ai_phrases = [
-        "i apologize", "i'm sorry", "unfortunately", "i cannot", "i can't",
-        "i would need", "as an ai", "as a language model", "i don't have",
-        "i am not", "i'm not", "please note", "it's important to",
-        "i understand", "i can help", "how can i assist", "what do you need"
+        "i apologize", "unfortunately",
+        "as an ai", "i don't have", "please note",
+        "i understand", "how can i assist"
     ]
     
     for phrase in ai_phrases:
@@ -150,6 +153,7 @@ def enforce_personality_rules(text: str) -> str:
     
     return text.strip()
 
+
 # Message functionality
 async def send_message(message: discord.Message, user_message: str) -> None:
     global game_running
@@ -157,11 +161,11 @@ async def send_message(message: discord.Message, user_message: str) -> None:
     
     # Check if it's a DM or if the bot was mentioned in a server
     is_dm = isinstance(message.channel, discord.DMChannel)
-    is_mentioned = "<@1438358552732368918>" in user_message
+    is_mentioned = config["ai_trigger"] in user_message
     
     if (is_dm or is_mentioned) and message.author.name not in banned and not user_message.startswith("!"):
         if is_mentioned:
-            user_message = user_message.replace("<@1438358552732368918>".lower(), "")
+            user_message = user_message.replace(config["ai_trigger"].lower(), "")
         
         # Replace other user mentions with usernames
         for user in message.mentions:
@@ -194,7 +198,7 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             
             # Use a better model for character consistency
             ollama_response = ollama.chat(
-                "llama2-uncensored:7b", 
+                config["model"], 
                 messages, 
                 options={
                     "num_ctx": 4096,  # Larger context window
@@ -206,9 +210,6 @@ async def send_message(message: discord.Message, user_message: str) -> None:
 
             # Extract just the message content from the response
             message_content_raw = ollama_response['message']['content']
-            
-            # Post-process to enforce rules if model breaks them
-            message_content = enforce_personality_rules(message_content_raw)
             
             # Double-check for character breaks and force correction if needed
             if any(phrase in message_content.lower() for phrase in ["i apologize", "as an ai", "language model", "i cannot", "i'm sorry"]):
@@ -229,8 +230,7 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             
             response = message_content 
         except Exception as e:
-            print(e)
-            
+            print(e)        
     elif message.author.name not in banned and user_message.startswith("!"):
         cmd_parts = user_message[1:].lower().strip().split()
 
@@ -272,13 +272,13 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             else:
                 response = cmd.roast()
         elif cmd_parts[0] == "compliment" or cmd_parts[0] == "nice":
-            if len(cmd_parts) > 1:
-                response = f"{cmd_parts[1]} {cmd.compliment()}".lower()
+            if len(cmd_parts) > 1: # Checks if an argument is given
+                response = f"{cmd_parts[1]} {cmd.compliment()}"
             else:
-                response = cmd.compliment()
+                response = cmd.compliment() # If no argument is given, the command excecutes without printing a name
         elif cmd_parts[0] == "rizz" or cmd_parts[0] == "pickup":
             if len(cmd_parts) > 1:
-                response = f"{' '.join(cmd_parts[1:]).lower()}, {cmd.rizz()}"
+                response = f"{' '.join(cmd_parts[1:])}, {cmd.rizz()}"
             else:
                 response = cmd.rizz()
         elif cmd_parts[0] == "randomnumber" or cmd_parts[0] == "randint":
@@ -309,28 +309,16 @@ async def send_message(message: discord.Message, user_message: str) -> None:
                 else:
                     response = "u need to provide text to translate. format: !translate source_lang target_lang text"
             else:
-                response = "wrong format. use: !translate source_lang target_lang text"
+                response = "Wrong format. Use: !translate source_lang target_lang text"
         elif cmd_parts[0] == "truth":
             response = game.tord("truth")
         elif cmd_parts[0] == "dare":
             response = game.tord("dare")
         elif cmd_parts[0] == "wyr":
             response = game.wyr()
-        # elif cmd_parts[0] == "russianroulette" or cmd_parts[0] == 'rr':
-        #     if not game_running:
-        #         game_running = True
-        #         participants = []
-        #         for user in message.mentions:
-        #             participants.append(user.name)
-        #         if not participants and len(cmd_parts) > 1:
-        #             participants = cmd_parts[1:]
-                
-        #         await game.russian_roulette(message, message.channel, participants)
-        #         game_running = False
-        #         return
 
         elif cmd_parts[0] == "help" or cmd_parts[0] == "h" or cmd_parts[0] == "?":
-            response = cmd.show_commands()
+            await message.channel.send(str(cmd.show_commands()))
 
         # Music
         elif cmd_parts[0] == "listvc":
@@ -352,9 +340,15 @@ async def send_message(message: discord.Message, user_message: str) -> None:
             response = cmd.now_playing()
         elif cmd_parts[0] == "queue":
             response = cmd.music_queue()
+    
+a    function.save_config(config, config_path)
 
-        
-
+    if config["is_casual"] == true:
+        response = enforce_personality_rules(response)
+    elif config["is_casual"] == false:
+        pass
+    else:
+        print(f"\nInvalid value for is_casual in config.json: '{config["is_casual"]}'. Please use either true or false\n")
 
     if response:
         await message.channel.send(str(response))

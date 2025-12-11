@@ -4,6 +4,7 @@ import yt_dlp
 from typing import Optional, List
 import functions as function
 
+# Config stuff
 config_path = 'config.json'
 config = function.load_config(config_path)
 
@@ -30,25 +31,25 @@ FFMPEG_OPTIONS = {
 }
 
 class MusicPlayer:
+    # These are the 
     def __init__(self, client):
-        self.client = client
-        self.voice_client: Optional[discord.VoiceClient] = None
-        self.playlist: List[dict] = []
-        self.current_index: int = 0
-        self.is_playing: bool = False
-        self.loop_playlist: bool = True
-        self.ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
+        self.client = client # Discord client reference
+        self.voice_client: Optional[discord.VoiceClient] = None # The current connected vc
+        self.playlist: List[dict] = [] # List of all vids in the playlist
+        self.current_index: int = 0 # Index of current song
+        self.is_playing: bool = False # Checks if smth is playing
+        self.loop_playlist: bool = True # Determines if playlist repeats after finishing
+        self.ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS) # Youtube dl instance for getting info
         
     async def load_playlist(self) -> str:
-        # Load the YouTube playlist from config
         try:
-            playlist_url = config.get('youtube_playlist_url')
+            playlist_url = config.get('youtube_playlist_url') # Load the YouTube playlist from config
             if not playlist_url: # Check if a playlist url exists
-                return "no playlist url found in config"
+                return "No playlist URL found in config file"
             
-            print(f"Loading playlist from: {playlist_url}")
+            print(f"Loading playlist from: {playlist_url}") # explains itself
             
-            # Use extract_flat to get video IDs quickly
+            # creates ytdl object to get video ids and titles
             ytdl_flat = yt_dlp.YoutubeDL({
                 'extract_flat': True,
                 'quiet': True,
@@ -73,36 +74,36 @@ class MusicPlayer:
                             self.playlist.append(song_info)
                             print(f"Loaded: {song_info['title']}")
                         
-                return f"loaded {len(self.playlist)} songs from playlist"
+                return f"Loaded {len(self.playlist)} songs from playlist."
             else:
-                return "failed to load playlist"
+                return "Failed to load playlist."
         except Exception as e:
             print(f"Error loading playlist: {e}")
-            return f"error loading playlist: {str(e)}"
+            return f"Error loading playlist: {str(e)}"
     
     async def join_voice(self, message: discord.Message) -> str:
-        """Join the user's voice channel"""
+        # Join the user's voice channel
         if message.author.voice is None:
-            return "you need to be in a voice channel first"
+            return "You need to be in a voice channel first."
         
         channel = message.author.voice.channel
-        print(f"Attempting t o join voice channel: {channel.name}")
+        print(f"Attempting to join voice channel: {channel.name}")
         
         try:
             if self.voice_client and self.voice_client.is_connected():
                 await self.voice_client.move_to(channel)
                 print(f"Moved to {channel.name}")
-                return f"moved to {channel.name}"
+                return f"Moved to {channel.name}"
             else:
                 self.voice_client = await channel.connect()
                 print(f"Connected to {channel.name}")
                 return f"joined {channel.name}"
         except Exception as e:
             print(f"Error joining voice channel: {e}")
-            return f"failed to join voice channel: {str(e)}"
+            return f"Failed to join voice channel: {str(e)}"
     
     async def get_stream_url(self, webpage_url: str) -> Optional[str]:
-        """Get the actual stream URL for a video"""
+        # Get the actual stream URL for a video
         if not webpage_url:
             print("No webpage URL provided")
             return None
@@ -125,7 +126,7 @@ class MusicPlayer:
             return None
     
     async def play_song(self, index: int = None):
-        """Play a song from the playlist"""
+        # Play a song from the playlist
         if index is not None:
             self.current_index = index
         
@@ -180,7 +181,7 @@ class MusicPlayer:
             await self.play_song()
     
     async def play_next(self):
-        """Play the next song in the playlist"""
+        # Play the next song in the playlist
         if not self.voice_client or not self.voice_client.is_connected():
             print("Not connected to voice for next song")
             return
@@ -196,7 +197,7 @@ class MusicPlayer:
         await self.play_song()
     
     async def start(self, message: discord.Message) -> str:
-        """Start playing the playlist"""
+        # Start playing the playlist
         print("Start command received")
         
         if not self.playlist:
@@ -218,7 +219,7 @@ class MusicPlayer:
         return f"started playing playlist from the beginning"
     
     def skip(self) -> str:
-        """Skip to next song"""
+        # Skip to next song
         if not self.voice_client or not self.voice_client.is_playing():
             return "nothing is playing right now"
         
@@ -226,7 +227,7 @@ class MusicPlayer:
         return f"skipped to next song"
     
     def skip_back(self) -> str:
-        """Go back to previous song"""
+        # Go back to previous song
         if not self.voice_client:
             return "not connected to voice"
         
@@ -236,21 +237,21 @@ class MusicPlayer:
         return f"going back to previous song"
     
     def pause(self) -> str:
-        """Pause playback"""
+        # Pause playback
         if self.voice_client and self.voice_client.is_playing():
             self.voice_client.pause()
             return "paused"
         return "nothing is playing"
     
     def resume(self) -> str:
-        """Resume playback"""
+        # Resume playback
         if self.voice_client and self.voice_client.is_paused():
             self.voice_client.resume()
             return "resumed"
         return "nothing is paused"
     
     async def stop(self) -> str:
-        """Stop and disconnect"""
+        # Stop and disconnect
         print("Stop command received")
         if self.voice_client:
             self.is_playing = False
@@ -266,7 +267,7 @@ class MusicPlayer:
         return "not connected to voice"
     
     def now_playing(self) -> str:
-        """Get current song info"""
+        # Get current song info
         if not self.is_playing or not self.playlist:
             return "nothing is playing right now"
         
@@ -278,7 +279,7 @@ class MusicPlayer:
         return f"now playing: {song['title']} ({minutes}:{seconds:02d}) - song {self.current_index + 1}/{len(self.playlist)}"
     
     def queue_info(self) -> str:
-        """Get next few songs in queue"""
+        # Get next few songs in queue
         if not self.playlist:
             return "playlist is empty"
         
@@ -295,7 +296,7 @@ class MusicPlayer:
 music_player: Optional[MusicPlayer] = None
 
 def init_music_player(client):
-    """Initialize the music player"""
+    # Initialize the music player
     global music_player
     music_player = MusicPlayer(client)
     return music_player

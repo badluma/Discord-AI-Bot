@@ -33,9 +33,9 @@ pip install discord.py ollama python-dotenv requests
 DISCORD_TOKEN=your_discord_bot_token_here
 ```
 
-3. Make sure Ollama is installed and the llama2-uncensored:7b model is pulled:
+3. Make sure Ollama is installed and a model of your choice is pulled:
 ```bash
-ollama pull llama2-uncensored:7b
+ollama pull dolphin3
 ```
 
 4. Configure your bot's personality in `config.json` (see Configuration section below)
@@ -88,9 +88,7 @@ The bot will respond according to your configured personality while maintaining 
 - `!bitcoin` or `!btc <eur|usd>` - Get current Bitcoin price
 - `!calc` or `!calculate <expression>` - Simple calculator (+, -, *, /)
 - `!qr <link>` - Generate QR code for a link
-- `!translate` or `!trans` - Translation utility
-  - `!translate` - Show all supported languages
-  - `!translate <source> <target> <text>` - Translate text between languages
+- `!translate <source> <target> <text>` - Translate text between languages (just `!translate` to show available languages)
 - `!help` - Show all available commands
 
 ### Moderation (Admin Only)
@@ -107,9 +105,15 @@ The bot uses a `config.json` file to store all settings:
 {
     "banned": [],
     "muted": [],
-    "bot_admin": ["your_discord_username"],
-    "admin": ["your_discord_username"],
-    "prompt": "Your custom AI personality prompt goes here",
+    "admin": ["Your discord username"],
+
+    "youtube_playlist_url": "Your desired youtube playlist",
+    "music_channel_id": "Name of the voice channel where the playlist should play",
+
+    "ai_trigger": "<@1438358552732368918>",
+    "model": "dolphin3",
+    "prompt": "You are a helpful assistant.",
+    "is_casual": true,
     "history": {}
 }
 ```
@@ -135,8 +139,8 @@ Edit the `prompt` field in `config.json` to define your bot's character. You can
 
 ### Admin Configuration
 
-- `bot_admin` - Users who can use moderation commands
-- `admin` - Additional admin tier (currently same permissions as bot_admin)
+- `admin` - Users who can use moderation commands
+- `admin` - Additional admin tier (currently same permissions as admin)
 - `banned` - List of users banned from interacting with the bot
 
 ### Conversation History

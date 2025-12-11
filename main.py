@@ -1,58 +1,32 @@
-print("Importing typing...")
+print("Importing packages: ", end="")
+print("typing, ", end="")
 from typing import Final
-print("Typing imported.")
-
-print("Importing dotenv...")
+print("dotenv, ", end="")
 from dotenv import load_dotenv
-print("dotenv imported.")
-
-print("Importing discord.ext.commands...")
+print("discord.ext, ", end="")
 from discord.ext import commands
-print("discord.ext.commands imported.")
-
-print("Importing functions...")
+print("functions, ", end="")
 import functions as function
-print("functions imported.")
-
-print("Importing process...")
+print("process, ", end="")
 import process
-print("process imported.")
-
-print("Importing os...")
+print("os, ", end="")
 import os
-print("os imported.")
-
-print("Importing re...")
+print("re, ", end="")
 import re
-print("re imported.")
-
-print("Importing json...")
+print("json, ", end="")
 import json
-print("json imported.")
-
-print("Importing time...")
+print("time, ", end="")
 import time
-print("time imported.")
-
-print("Importing random...")
+print("random, ", end="")
 import random
-print("random imported.")
-
-print("Importing discord...")
+print("discord, ", end="")
 import discord
-print("discord imported.")
-
-print("Importing ollama...")
+print("ollama, ", end="")
 import ollama
-print("ollama imported.")
-
-print("Importing requests...")
+print("requests, ", end="")
 import requests
-print("requests imported.")
-
-print("Importing music...")
+print("music, ", end="")
 import music
-print("music imported.")
 
 
 # Load Discord Token from a safe file
