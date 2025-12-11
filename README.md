@@ -2,6 +2,8 @@
 
 A customizable Discord bot powered by Ollama that can roleplay as any character or personality you define. Configure the bot's personality, behavior, and conversation style through a simple JSON configuration file.
 
+---
+
 ## Features
 
 - **Fully Customizable AI Personality** - Define any character, tone, or behavior through the config file
@@ -57,9 +59,9 @@ The bot will respond according to your configured personality while maintaining 
 
 ## Commands
 
-<iframe width="1840" height="1035" src="https://www.youtube.com/embed/jWvS045lb6I" title="Discord AI Bot | Commands Showcase" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Discord AI Bot | Commands Showcase](https://img.youtube.com/vi/jWvS045lb6I/maxresdefault.jpg)](https://www.youtube.com/watch?v=jWvS045lb6I&t=22s)
 
-### Fun & Games
+#### Fun & Games
 - `!roll` - Roll a dice (1-6)
 - `!flip` or `!coinflip` - Flip a coin (heads/tails)
 - `!random <low> <high>` - Generate random number between two values
@@ -74,7 +76,7 @@ The bot will respond according to your configured personality while maintaining 
 - `!activity` - Get a random activity suggestion
 - `!draw <participants...>` - Randomly choose from participants
 
-### Content & Media
+#### Content & Media
 - `!quote` - Get a random inspirational quote
 - `!fact` or `!funfact` - Get a random useless fun fact
 - `!joke` or `!dadjoke` - Get an unfunny dad joke
@@ -86,14 +88,14 @@ The bot will respond according to your configured personality while maintaining 
 - `!cat` - Get a random cat picture
 - `!dog` - Get a random dog picture
 
-### Utilities
+#### Utilities
 - `!bitcoin` or `!btc <eur|usd>` - Get current Bitcoin price
 - `!calc` or `!calculate <expression>` - Simple calculator (+, -, *, /)
 - `!qr <link>` - Generate QR code for a link
 - `!translate <source> <target> <text>` - Translate text between languages (just `!translate` to show available languages)
 - `!help` - Show all available commands
 
-### Moderation (Admin Only)
+#### Moderation (Admin Only)
 - `!ban <user>` - Ban user from using the bot
 - `!unban <user>` - Unban user to allow bot usage
 
@@ -101,7 +103,7 @@ The bot will respond according to your configured personality while maintaining 
 
 The bot uses a `config.json` file to store all settings:
 
-### config.json Structure
+#### config.json Structure
 
 ```json
 {
@@ -120,7 +122,7 @@ The bot uses a `config.json` file to store all settings:
 }
 ```
 
-### Customizing Your Bot's Personality
+#### Customizing Your Bot's Personality
 
 Edit the `prompt` field in `config.json` to define your bot's character. You can configure:
 
@@ -139,24 +141,24 @@ Edit the `prompt` field in `config.json` to define your bot's character. You can
 - A sarcastic AI from the future
 - Or anything else you can imagine!
 
-### Admin Configuration
+#### Admin Configuration
 
 - `admin` - Users who can use moderation commands
 - `admin` - Additional admin tier (currently same permissions as admin)
 - `banned` - List of users banned from interacting with the bot
 
-### Conversation History
+#### Conversation History
 
 The bot automatically maintains conversation history per channel in the `history` object. This is limited to the last 6 interactions to maintain context while staying within model limits.
 
-## Customization Tips
+### Customization Tips
 
 1. **Keep prompts clear and specific** - The more detailed your personality description, the better the bot will stay in character
 2. **Define communication rules** - Specify capitalization, punctuation, emoji usage, response length, etc.
 3. **Add examples** - Include examples of good and bad responses in your prompt
 4. **Test and iterate** - Try different prompts and see what works best for your use case
 
-## Model Configuration
+### Model Configuration
 
 The bot uses the `llama2-uncensored:7b` model by default with these settings:
 - Context window: 4096 tokens
