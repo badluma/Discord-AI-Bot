@@ -57,6 +57,8 @@ The bot will respond according to your configured personality while maintaining 
 
 ## Commands
 
+<iframe width="1840" height="1035" src="https://www.youtube.com/embed/jWvS045lb6I" title="Discord AI Bot | Commands Showcase" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ### Fun & Games
 - `!roll` - Roll a dice (1-6)
 - `!flip` or `!coinflip` - Flip a coin (heads/tails)
@@ -180,3 +182,11 @@ Feel free to add new commands, improve the AI integration, or enhance the person
 ## License
 
 This project is open source and available for modification and use. (CC0 1.0 Universal)
+
+---
+
+**Sidenote about the use of AI**
+I programmed most of the stuff myself and used [Opencode Zen](https://github.com/sst/opencode) for troubleshooting. The only thing made entirely by AI is the Music feature because I already moved on to a new project and didn't want to waste too much time on that. The README is also written mostly by Claude.
+
+---
+Made by badluma ✦
