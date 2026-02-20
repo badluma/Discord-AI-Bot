@@ -20,56 +20,9 @@ import requests
 game_running = False
 config_path = 'config.json'
 config = function.load_config(config_path)
-slurs_path = 'slurs.json'
-slurs = function.load_config(slurs_path)
 banned = config["banned"]
 PROMPT = config.get("prompt", "")
-emotes = ["<:1_:1440783147565318265>", 
-          "<:2_:1440783161301667910>", 
-          "<:3_:1440783172911763669>", 
-          "<:amogus:1440824569802788954>", 
-          "<:angel:1441062581799489556>", 
-          "<:anonymous:1440766225016819772>", 
-          "<:arcticFox:1441063285259501670>", 
-          "<:blackWitch:1441062189157847040>", 
-          "<:blush:1440777955533131776>", 
-          "<:coolGuy:1441062264491868210>", 
-          "<:crash:1440784746140532849>", 
-          "<:croco:1440766300933591210>", 
-          "<:cute:1440770218388619395>", 
-          "<:deadpool:1440766016891392081>", 
-          "<:duck:1440766454591914035>", 
-          "<:emo:1441060748175610016>", 
-          "<:evil:1440782801812066425>", 
-          "<:fbi:1441062362088996965>", 
-          "<:happy:1440775333119922378>", 
-          "<:huh:1440807952909996153>", 
-          "<:itempistolyellow:1440781831392727110>", 
-          "<:itemstairsgrey:1440783817689530519>", 
-          "<:laugh:1440871493285314633>", 
-          "<:laugh2:1440872332494245989>", 
-          "<:maggie:1440766480042954782>", 
-          "<:nancybrain:1440771404738859189>", 
-          "<:nanncy:1440784428703154176>", 
-          "<:ninja:1441062523318308924>", 
-          "<:nocheating:1440785581641699328>", 
-          "<:omE:1440766507188486174>", 
-          "<:orang:1440777076939685990>", 
-          "<:orangshotgun:1440776793836621917>", 
-          "<:patpat:1440826307805052998>", 
-          "<:pepecross:1440766656698646740>", 
-          "<:pepemonster:1440766828069650442>", 
-          "<:queen:1441063203378299031>", 
-          "<:robinHood:1441060911501803680>", 
-          "<:robloxface:1440809897351712788>", 
-          "<:sleepy:1440808831411290213>", 
-          "<:stare:1440826772999508090>", 
-          "<:suprised:1440826796160450674>", 
-          "<:tnt:1440779932870508785>", 
-          "<:tuff:1440826292470550693>", 
-          "<:ughping:1440766923863228537>", 
-          "<:uhm:1440769726786699436>", 
-          "<:werewolf:1440820914601066577>"]
+emotes = config["emotes"]
 
 languages = ("Arabic: `ar`\n"
     "Azerbaijani: `az`\n"
@@ -345,7 +298,7 @@ async def send_message(message: discord.Message, user_message: str) -> None:
     function.save_config(config, config_path)
 
     if response:
-        # Check if response is a URL (starts with http:// or https://)
+        # Check if response is a URL
         is_url = response.startswith('http://') or response.startswith('https://')
         
         if config["is_casual"] == True and not is_url:
